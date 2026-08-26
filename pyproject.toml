@@ -21,12 +21,13 @@ classifiers = [
 
 dependencies = [
     "mcp[cli]>=2.0.0",
+    "cryptography>=44.0.0",
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/mcp-manager"
-Repository = "https://github.com/yourusername/mcp-manager"
-Issues = "https://github.com/yourusername/mcp-manager/issues"
+Homepage = "https://github.com/mcp-manager/mcp-manager"
+Repository = "https://github.com/mcp-manager/mcp-manager"
+Issues = "https://github.com/mcp-manager/mcp-manager/issues"
 
 [build-system]
 requires = ["hatchling"]

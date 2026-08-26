@@ -1,4 +1,8 @@
-"""Registry of known MCP servers with default configurations."""
+"""Registry of known MCP servers with default configurations.
+
+Provides a catalog of popular MCP servers (GitHub, Supabase, Playwright, etc.)
+with their default commands, environment variables, and documentation links.
+"""
 
 import json
 import os
@@ -7,14 +11,14 @@ from typing import Any, Optional
 
 
 class ServerRegistry:
-    """Katalog známých MCP serverů s výchozími konfiguracemi."""
+    """Catalog of known MCP servers with pre-configured templates."""
 
     def __init__(self):
         self._catalog: dict[str, dict[str, Any]] = {}
         self._load_builtin_catalog()
 
     def _load_builtin_catalog(self):
-        """Načte vestavěný katalog ze servers.json."""
+        """Load the built-in catalog from servers.json."""
         catalog_path = Path(__file__).parent / "templates" / "servers.json"
         if catalog_path.exists():
             with open(catalog_path, "r", encoding="utf-8") as f:
@@ -22,15 +26,15 @@ class ServerRegistry:
                 self._catalog = data.get("servers", {})
 
     def list_available(self) -> dict[str, dict[str, Any]]:
-        """Vrátí seznam všech známých serverů v katalogu."""
+        """Return all servers in the catalog."""
         return dict(self._catalog)
 
     def get_template(self, server_id: str) -> Optional[dict[str, Any]]:
-        """Vrátí šablonu konfigurace pro daný server."""
+        """Get the configuration template for a server."""
         return self._catalog.get(server_id)
 
     def search(self, query: str) -> list[dict[str, Any]]:
-        """Vyhledá servery v katalogu podle názvu nebo popisu."""
+        """Search servers by name, description, or category."""
         query_lower = query.lower()
         results = []
         for server_id, info in self._catalog.items():
@@ -42,7 +46,7 @@ class ServerRegistry:
         return results
 
     def list_categories(self) -> dict[str, list[str]]:
-        """Vrátí servery seskupené podle kategorií."""
+        """Return servers grouped by category."""
         categories: dict[str, list[str]] = {}
         for server_id, info in self._catalog.items():
             cat = info.get("category", "other")
@@ -50,11 +54,11 @@ class ServerRegistry:
         return categories
 
     def add_to_catalog(self, server_id: str, config: dict[str, Any]):
-        """Přidá nový server do katalogu (během běhu)."""
+        """Add a custom server to the catalog at runtime."""
         self._catalog[server_id] = config
 
     def remove_from_catalog(self, server_id: str) -> bool:
-        """Odebere server z katalogu (během běhu)."""
+        """Remove a server from the catalog at runtime."""
         if server_id in self._catalog:
             del self._catalog[server_id]
             return True
@@ -66,7 +70,7 @@ class ServerRegistry:
         custom_name: Optional[str] = None,
         custom_env: Optional[dict[str, str]] = None,
     ) -> Optional[dict[str, Any]]:
-        """Vygeneruje konfiguraci pro přidání do opencode.json."""
+        """Generate a config dict for adding this server to a harness."""
         template = self.get_template(server_id)
         if not template:
             return None

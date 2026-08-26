@@ -60,6 +60,123 @@
       "command": ["python", "-m", "src.mcp_server"],
       "env_vars": [],
       "category": "scraping"
+    },
+    "filesystem": {
+      "name": "Filesystem MCP",
+      "description": "Read, write, and manage files and directories",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem"],
+      "env_vars": [],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem",
+      "category": "filesystem"
+    },
+    "git": {
+      "name": "Git MCP",
+      "description": "Git operations - status, diff, log, commit, branch management",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-git"],
+      "env_vars": [],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/git",
+      "category": "version-control"
+    },
+    "postgres": {
+      "name": "PostgreSQL MCP",
+      "description": "PostgreSQL database queries, schema inspection, SQL execution",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-postgres"],
+      "env_vars": ["POSTGRES_CONNECTION_STRING"],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/postgres",
+      "category": "database"
+    },
+    "sqlite": {
+      "name": "SQLite MCP",
+      "description": "SQLite database operations - read, write, query local databases",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-sqlite"],
+      "env_vars": [],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/sqlite",
+      "category": "database"
+    },
+    "docker": {
+      "name": "Docker MCP",
+      "description": "Docker container management - list, build, run, stop containers",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-docker"],
+      "env_vars": [],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/docker",
+      "category": "devops"
+    },
+    "puppeteer": {
+      "name": "Puppeteer MCP",
+      "description": "Browser automation with Puppeteer - screenshots, navigation, web scraping",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-puppeteer"],
+      "env_vars": [],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/puppeteer",
+      "category": "browser"
+    },
+    "brave-search": {
+      "name": "Brave Search MCP",
+      "description": "Web and local search using Brave Search API",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-brave-search"],
+      "env_vars": ["BRAVE_API_KEY"],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search",
+      "category": "search"
+    },
+    "google-maps": {
+      "name": "Google Maps MCP",
+      "description": "Google Maps - places, directions, geocoding, elevation data",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-google-maps"],
+      "env_vars": ["GOOGLE_MAPS_API_KEY"],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/google-maps",
+      "category": "utilities"
+    },
+    "fetch": {
+      "name": "Fetch MCP",
+      "description": "HTTP fetch - retrieve web pages, API responses, convert to markdown",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-fetch"],
+      "env_vars": [],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch",
+      "category": "utilities"
+    },
+    "memory": {
+      "name": "Memory MCP",
+      "description": "Knowledge graph - persistent memory for entities, relations, observations",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-memory"],
+      "env_vars": [],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/memory",
+      "category": "utilities"
+    },
+    "everything": {
+      "name": "Everything MCP",
+      "description": "Test server with all MCP features - tools, resources, prompts, sampling",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-everything"],
+      "env_vars": [],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/everything",
+      "category": "testing"
+    },
+    "slack": {
+      "name": "Slack MCP",
+      "description": "Slack integration - channels, messages, users, search",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-slack"],
+      "env_vars": ["SLACK_BOT_TOKEN", "SLACK_TEAM_ID"],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/slack",
+      "category": "communication"
+    },
+    "gdrive": {
+      "name": "Google Drive MCP",
+      "description": "Google Drive - list, search, read, create files and folders",
+      "type": "npx",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-gdrive"],
+      "env_vars": ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"],
+      "docs_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/gdrive",
+      "category": "productivity"
     }
   }
 }

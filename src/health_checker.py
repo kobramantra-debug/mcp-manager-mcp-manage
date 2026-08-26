@@ -1,7 +1,12 @@
-"""Health checker for MCP servers."""
+"""Health checker for MCP servers.
+
+Sends MCP initialize requests to servers via STDIO, Docker, or HTTP
+and reports their status (healthy, unhealthy, timeout, unknown).
+"""
 
 import asyncio
 import json
+import os
 import subprocess
 import time
 from datetime import datetime
@@ -9,7 +14,7 @@ from typing import Any, Optional
 
 
 class HealthStatus:
-    """Stav zdraví MCP serveru."""
+    """Result of a health check for an MCP server."""
 
     HEALTHY = "healthy"
     UNHEALTHY = "unhealthy"
@@ -23,6 +28,7 @@ class HealthStatus:
         self.checked_at = datetime.now().isoformat()
 
     def to_dict(self) -> dict:
+        """Serialize the health status to a dictionary."""
         return {
             "status": self.status,
             "message": self.message,
@@ -32,14 +38,14 @@ class HealthStatus:
 
 
 class HealthChecker:
-    """Kontroluje stav MCP serverů."""
+    """Checks the health of MCP servers by sending initialize requests."""
 
     def __init__(self, timeout_seconds: int = 5):
         self.timeout = timeout_seconds
         self._history: dict[str, list[dict]] = {}
 
     def check_stdio(self, command: list[str], env: Optional[dict[str, str]] = None) -> HealthStatus:
-        """Otestuje STDIO MCP server zasláním initialize requestu."""
+        """Test a STDIO-based MCP server by sending an initialize request."""
         init_request = json.dumps({
             "jsonrpc": "2.0",
             "id": 1,
@@ -53,7 +59,6 @@ class HealthChecker:
 
         try:
             start = time.time()
-            import os
             process_env = os.environ.copy()
             if env:
                 process_env.update(env)
@@ -69,7 +74,7 @@ class HealthChecker:
             latency = (time.time() - start) * 1000
 
             if result.returncode == 0 and result.stdout.strip():
-                # Pokusí se parsnout odpověď
+                # Try to parse the JSON-RPC response
                 for line in result.stdout.strip().split("\n"):
                     try:
                         response = json.loads(line)
@@ -95,7 +100,7 @@ class HealthChecker:
             return HealthStatus(HealthStatus.UNHEALTHY, str(e))
 
     def check_docker(self, image: str, env: Optional[dict[str, str]] = None) -> HealthStatus:
-        """Otestuje Docker-based MCP server."""
+        """Test a Docker-based MCP server."""
         command = ["docker", "run", "-i", "--rm", "--entrypoint", ""]
 
         if env:
@@ -112,7 +117,7 @@ class HealthChecker:
                 command,
                 capture_output=True,
                 text=True,
-                timeout=self.timeout + 10,  # Docker má overhead
+                timeout=self.timeout + 10,  # Docker has extra overhead
             )
             latency = (time.time() - start) * 1000
 
@@ -127,7 +132,7 @@ class HealthChecker:
             return HealthStatus(HealthStatus.UNHEALTHY, str(e))
 
     def check_http(self, url: str, headers: Optional[dict[str, str]] = None) -> HealthStatus:
-        """Otestuje HTTP/remote MCP server."""
+        """Test an HTTP/remote MCP server."""
         import urllib.request
         import urllib.error
 
@@ -154,11 +159,11 @@ class HealthChecker:
             return HealthStatus(HealthStatus.UNHEALTHY, str(e))
 
     def check_server(self, name: str, config: dict[str, Any]) -> HealthStatus:
-        """Otestuje MCP server podle typu konfigurace."""
+        """Check a server based on its configuration type (local/docker/remote)."""
         server_type = config.get("type", "local")
         env = config.get("environment", {})
 
-        # resolving env vars
+        # Resolve {env:VAR} placeholders
         resolved_env = {}
         for k, v in env.items():
             if isinstance(v, str) and v.startswith("{env:") and v.endswith("}"):
@@ -186,16 +191,15 @@ class HealthChecker:
         else:
             status = HealthStatus(HealthStatus.UNKNOWN, f"Unknown type: {server_type}")
 
-        # Ulož do historie
+        # Store in history (keep last 100 entries per server)
         self._history.setdefault(name, []).append(status.to_dict())
-        # Udržuj posledních 100 záznamů
         if len(self._history[name]) > 100:
             self._history[name] = self._history[name][-100:]
 
         return status
 
     def check_all(self, servers: dict[str, dict[str, Any]]) -> dict[str, dict]:
-        """Otestuje všechny servery."""
+        """Check all servers and return a summary."""
         results = {}
         for name, config in servers.items():
             status = self.check_server(name, config)
@@ -203,8 +207,5 @@ class HealthChecker:
         return results
 
     def get_history(self, server_name: str, limit: int = 10) -> list[dict]:
-        """Vrátí historii health checků pro server."""
+        """Get recent health check history for a server."""
         return self._history.get(server_name, [])[-limit:]
-
-
-import os
