@@ -1,0 +1,65 @@
+{
+  "servers": {
+    "github": {
+      "name": "GitHub MCP Server",
+      "description": "51 tools for GitHub - PRs, issues, code review, repositories",
+      "type": "docker",
+      "command": ["docker", "run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN={env:GITHUB_TOKEN}", "ghcr.io/github/github-mcp-server"],
+      "env_vars": ["GITHUB_PERSONAL_ACCESS_TOKEN"],
+      "docs_url": "https://github.com/github/github-mcp-server",
+      "category": "code-hosting"
+    },
+    "supabase": {
+      "name": "Supabase MCP Server",
+      "description": "Manage Supabase projects, databases, Edge Functions, auth",
+      "type": "npx",
+      "command": ["npx", "-y", "@supabase/mcp-server-supabase@latest"],
+      "env_vars": ["SUPABASE_ACCESS_TOKEN"],
+      "docs_url": "https://supabase.com/docs/guides/getting-started/ai-skills",
+      "category": "database"
+    },
+    "playwright": {
+      "name": "Playwright MCP",
+      "description": "Browser automation - testing, scraping, screenshots, form filling",
+      "type": "npx",
+      "command": ["npx", "-y", "@playwright/mcp@latest"],
+      "env_vars": [],
+      "docs_url": "https://github.com/microsoft/playwright-mcp",
+      "category": "browser"
+    },
+    "context7": {
+      "name": "Context7",
+      "description": "Up-to-date documentation for libraries and frameworks",
+      "type": "npx",
+      "command": ["npx", "-y", "@upstash/context7-mcp@latest"],
+      "env_vars": [],
+      "docs_url": "https://github.com/upstash/context7",
+      "category": "documentation"
+    },
+    "chrome-devtools": {
+      "name": "Chrome DevTools MCP",
+      "description": "Browser developer tools - debugging, performance, accessibility",
+      "type": "npx",
+      "command": ["npx", "-y", "chrome-devtools-mcp@latest"],
+      "env_vars": [],
+      "docs_url": "https://github.com/nicholasoxford/chrome-devtools-mcp",
+      "category": "browser"
+    },
+    "stitch": {
+      "name": "Stitch Design",
+      "description": "UI/UX design generation from text prompts",
+      "type": "remote",
+      "url": "https://stitch.googleapis.com/mcp",
+      "env_vars": [],
+      "category": "design"
+    },
+    "alza-scraper": {
+      "name": "Alza Price Scraper",
+      "description": "Scrape product prices and discounts from Alza.cz",
+      "type": "local",
+      "command": ["python", "-m", "src.mcp_server"],
+      "env_vars": [],
+      "category": "scraping"
+    }
+  }
+}
