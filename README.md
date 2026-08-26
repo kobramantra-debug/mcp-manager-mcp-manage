@@ -1,5 +1,9 @@
 # MCP Manager
 
+[![CI](https://github.com/kobramantra-debug/mcp-manager-mcp-manage/actions/workflows/ci.yml/badge.svg)](https://github.com/kobramantra-debug/mcp-manager-mcp-manage/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+
 Universal MCP Server Manager — add, remove, monitor, and configure all your MCP servers from one place.
 
 ## Features
