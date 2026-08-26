@@ -5,7 +5,7 @@ description = "Universal MCP Server Manager - add, remove, monitor and configure
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-authors = [{ name = "Your Name" }]
+authors = [{ name = "MCP Manager Contributors" }]
 keywords = ["mcp", "model-context-protocol", "server", "manager", "ai"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -25,9 +25,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mcp-manager/mcp-manager"
-Repository = "https://github.com/mcp-manager/mcp-manager"
-Issues = "https://github.com/mcp-manager/mcp-manager/issues"
+Homepage = "https://github.com/kobramantra-debug/mcp-manager-mcp-manage"
+Repository = "https://github.com/kobramantra-debug/mcp-manager-mcp-manage"
+Issues = "https://github.com/kobramantra-debug/mcp-manager-mcp-manage/issues"
 
 [build-system]
 requires = ["hatchling"]
