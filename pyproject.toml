@@ -1,5 +1,5 @@
 [project]
-name = "mcp-manager"
+name = "mcp-manager-universal"
 version = "0.1.0"
 description = "Universal MCP Server Manager - add, remove, monitor and configure all your MCP servers from one place"
 readme = "README.md"
