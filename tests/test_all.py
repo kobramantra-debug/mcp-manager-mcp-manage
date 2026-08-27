@@ -29,7 +29,7 @@ PASS = 0
 FAIL = 0
 
 
-def test(name: str, condition: bool, detail: str = ""):
+def _check(name: str, condition: bool, detail: str = ""):
     """Assert a test condition and print the result."""
     global PASS, FAIL
     if condition:
@@ -44,45 +44,45 @@ def test_harness_module():
     """Test harness definitions, detection, and format conversion."""
     print("\n--- 1. HARNESS MODULE ---")
 
-    test("7 harnesses defined", len(HARNESSES) == 7)
-    test("list_harnesses returns 7", len(list_harnesses()) == 7)
-    test("detect_installed returns list", isinstance(detect_installed(), list))
-    test("get_harness('opencode') exists", get_harness("opencode") is not None)
-    test("get_harness('claude-desktop') exists", get_harness("claude-desktop") is not None)
-    test("get_harness('cursor') exists", get_harness("cursor") is not None)
-    test("get_harness('windsurf') exists", get_harness("windsurf") is not None)
-    test("get_harness('cline') exists", get_harness("cline") is not None)
-    test("get_harness('zed') exists", get_harness("zed") is not None)
-    test("get_harness('continue') exists", get_harness("continue") is not None)
-    test("get_harness('invalid') returns None", get_harness("invalid") is None)
+    _check("7 harnesses defined", len(HARNESSES) == 7)
+    _check("list_harnesses returns 7", len(list_harnesses()) == 7)
+    _check("detect_installed returns list", isinstance(detect_installed(), list))
+    _check("get_harness('opencode') exists", get_harness("opencode") is not None)
+    _check("get_harness('claude-desktop') exists", get_harness("claude-desktop") is not None)
+    _check("get_harness('cursor') exists", get_harness("cursor") is not None)
+    _check("get_harness('windsurf') exists", get_harness("windsurf") is not None)
+    _check("get_harness('cline') exists", get_harness("cline") is not None)
+    _check("get_harness('zed') exists", get_harness("zed") is not None)
+    _check("get_harness('continue') exists", get_harness("continue") is not None)
+    _check("get_harness('invalid') returns None", get_harness("invalid") is None)
 
     # Claude/Cursor/Windsurf/Cline format conversion
     claude_universal = to_universal({"command": "npx", "args": ["-y", "pkg"], "env": {"KEY": "val"}}, "claude-desktop")
-    test("Claude format to universal", claude_universal.get("command") == ["npx", "-y", "pkg"])
-    test("Claude env to universal", claude_universal.get("env", {}).get("KEY") == "val")
+    _check("Claude format to universal", claude_universal.get("command") == ["npx", "-y", "pkg"])
+    _check("Claude env to universal", claude_universal.get("env", {}).get("KEY") == "val")
 
     # Zed format conversion
     zed_universal = to_universal({"source": "custom", "command": {"path": "npx", "args": ["-y", "pkg"], "env": {"K": "V"}}}, "zed")
-    test("Zed format to universal", zed_universal.get("command") == ["npx", "-y", "pkg"])
+    _check("Zed format to universal", zed_universal.get("command") == ["npx", "-y", "pkg"])
 
     # Continue format conversion
     continue_universal = to_universal({"command": "npx", "args": ["-y", "pkg"], "name": "test"}, "continue")
-    test("Continue format to universal", continue_universal.get("command") == ["npx", "-y", "pkg"])
+    _check("Continue format to universal", continue_universal.get("command") == ["npx", "-y", "pkg"])
 
     # Universal to Claude format
     claude_out = from_universal({"command": ["npx", "-y", "pkg"], "env": {"A": "B"}}, "claude-desktop")
-    test("Universal to Claude command", claude_out.get("command") == "npx")
-    test("Universal to Claude args", claude_out.get("args") == ["-y", "pkg"])
+    _check("Universal to Claude command", claude_out.get("command") == "npx")
+    _check("Universal to Claude args", claude_out.get("args") == ["-y", "pkg"])
 
     # Universal to Zed format
     zed_out = from_universal({"command": ["npx", "-y", "pkg"]}, "zed")
-    test("Universal to Zed source", zed_out.get("source") == "custom")
-    test("Universal to Zed command.path", zed_out.get("command", {}).get("path") == "npx")
+    _check("Universal to Zed source", zed_out.get("source") == "custom")
+    _check("Universal to Zed command.path", zed_out.get("command", {}).get("path") == "npx")
 
     # Universal to Continue format
     continue_out = from_universal({"command": ["npx", "-y", "pkg"]}, "continue")
-    test("Universal to Continue command", continue_out.get("command") == "npx")
-    test("Universal to Continue args", continue_out.get("args") == ["-y", "pkg"])
+    _check("Universal to Continue command", continue_out.get("command") == "npx")
+    _check("Universal to Continue args", continue_out.get("args") == ["-y", "pkg"])
 
 
 def test_config_manager():
@@ -93,15 +93,15 @@ def test_config_manager():
     cm = ConfigManager(harness_id="opencode")
     cm.load()
     servers = cm.list_servers()
-    test("OpenCode config loaded", isinstance(servers, (list, dict)), f"got {type(servers)}")
+    _check("OpenCode config loaded", isinstance(servers, (list, dict)), f"got {type(servers)}")
 
     # Switch harness
     cm.harness_id = "claude-desktop"
-    test("Switch to claude-desktop", cm.harness_id == "claude-desktop")
+    _check("Switch to claude-desktop", cm.harness_id == "claude-desktop")
 
     # Switch back
     cm.harness_id = "opencode"
-    test("Switch back to opencode", cm.harness_id == "opencode")
+    _check("Switch back to opencode", cm.harness_id == "opencode")
 
     # Temp config operations
     temp_config = tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w")
@@ -111,33 +111,33 @@ def test_config_manager():
     cm2 = ConfigManager(config_path=temp_config.name)
     cm2.load()
     ok = cm2.add_server("test-srv", {"type": "local", "command": ["echo", "hello"], "enabled": True})
-    test("Add server to temp config", ok)
-    test("Server appears in list", "test-srv" in cm2.list_servers())
+    _check("Add server to temp config", ok)
+    _check("Server appears in list", "test-srv" in cm2.list_servers())
 
     ok = cm2.update_server("test-srv", {"type": "npx", "command": ["npx", "pkg"], "enabled": True})
-    test("Update server", ok)
-    test("Server updated", cm2.list_servers()["test-srv"].get("command") == ["npx", "pkg"])
+    _check("Update server", ok)
+    _check("Server updated", cm2.list_servers()["test-srv"].get("command") == ["npx", "pkg"])
 
     ok = cm2.remove_server("test-srv")
-    test("Remove server", ok)
-    test("Server gone", "test-srv" not in cm2.list_servers())
+    _check("Remove server", ok)
+    _check("Server gone", "test-srv" not in cm2.list_servers())
 
     # Enable/disable
     cm2.add_server("toggle-srv", {"type": "local", "command": ["echo"], "enabled": True})
     cm2.disable_server("toggle-srv")
-    test("Disable server", cm2.list_servers()["toggle-srv"].get("enabled") == False)
+    _check("Disable server", cm2.list_servers()["toggle-srv"].get("enabled") == False)
     cm2.enable_server("toggle-srv")
-    test("Enable server", cm2.list_servers()["toggle-srv"].get("enabled") == True)
+    _check("Enable server", cm2.list_servers()["toggle-srv"].get("enabled") == True)
     cm2.remove_server("toggle-srv")
 
     # Export/import
     cm2.add_server("export-test", {"type": "local", "command": ["echo"]})
     exported = cm2.export_config()
-    test("Export returns JSON", len(exported) > 10)
+    _check("Export returns JSON", len(exported) > 10)
 
     # Cross-harness export
     cross = cm2.export_for_harness("claude-desktop")
-    test("Cross-harness export works", "mcpServers" in cross or "command" in cross)
+    _check("Cross-harness export works", "mcpServers" in cross or "command" in cross)
 
     os.unlink(temp_config.name)
 
@@ -147,48 +147,48 @@ def test_token_store():
     print("\n--- 3. TOKEN STORE ---")
 
     ts = TokenStore(master_password="test-password-123")
-    test("TokenStore initialized", ts is not None)
-    test("Is encrypted", ts.is_encrypted)
+    _check("TokenStore initialized", ts is not None)
+    _check("Is encrypted", ts.is_encrypted)
 
     ts.store("srv-a", "ghp_secret_token_abc123")
-    test("Store token", ts.has_valid_token("srv-a"))
+    _check("Store token", ts.has_valid_token("srv-a"))
 
     info = ts.get_token_info("srv-a")
-    test("Token info exists", info is not None)
-    test("Token preview", info["token_preview"].startswith("ghp_"))
-    test("Backend is encrypted_sqlite", info["storage_backend"] == "encrypted_sqlite")
+    _check("Token info exists", info is not None)
+    _check("Token preview", info["token_preview"].startswith("ghp_"))
+    _check("Backend is encrypted_sqlite", info["storage_backend"] == "encrypted_sqlite")
 
     retrieved = ts.retrieve("srv-a")
-    test("Retrieve token", retrieved == "ghp_secret_token_abc123")
+    _check("Retrieve token", retrieved == "ghp_secret_token_abc123")
 
     # Rotate
     ts.store("srv-a", "ghp_new_token_xyz789")
-    test("Rotate token", ts.retrieve("srv-a") == "ghp_new_token_xyz789")
+    _check("Rotate token", ts.retrieve("srv-a") == "ghp_new_token_xyz789")
 
     history = ts.get_history("srv-a")
-    test("History has 1 entry", len(history) == 1)
+    _check("History has 1 entry", len(history) == 1)
 
     # Multiple servers
     ts.store("srv-b", "sk-ant-api-key-123")
-    test("Multiple servers", ts.has_valid_token("srv-a") and ts.has_valid_token("srv-b"))
+    _check("Multiple servers", ts.has_valid_token("srv-a") and ts.has_valid_token("srv-b"))
 
     all_tokens = ts.list_all()
-    test("List all shows 2", len(all_tokens) == 2)
+    _check("List all shows 2", len(all_tokens) == 2)
 
     # Revoke
     ts.revoke("srv-a")
-    test("Revoke token", not ts.has_valid_token("srv-a"))
-    test("Other token still valid", ts.has_valid_token("srv-b"))
+    _check("Revoke token", not ts.has_valid_token("srv-a"))
+    _check("Other token still valid", ts.has_valid_token("srv-b"))
 
     # Revoke all
     ts.clear_all()
-    test("Clear all", len(ts.list_all()) == 0)
+    _check("Clear all", len(ts.list_all()) == 0)
 
     # Plaintext mode
     ts_plain = TokenStore()
-    test("Plaintext mode", not ts_plain.is_encrypted)
+    _check("Plaintext mode", not ts_plain.is_encrypted)
     ts_plain.store("plain-srv", "token123")
-    test("Plaintext store/retrieve", ts_plain.retrieve("plain-srv") == "token123")
+    _check("Plaintext store/retrieve", ts_plain.retrieve("plain-srv") == "token123")
     ts_plain.clear_all()
 
 
@@ -198,23 +198,23 @@ def test_server_registry():
 
     reg = ServerRegistry()
     all_servers = reg.list_available()
-    test("Registry has 20 servers", len(all_servers) == 20)
+    _check("Registry has 20 servers", len(all_servers) == 20)
 
     for server_id in ["github", "supabase", "playwright", "filesystem", "git", "postgres", "docker", "brave-search", "fetch", "memory", "slack"]:
-        test(f"{server_id} in catalog", server_id in all_servers)
+        _check(f"{server_id} in catalog", server_id in all_servers)
 
     # Search
     browser_results = reg.search("browser")
-    test("Search 'browser' finds results", len(browser_results) >= 2)
-    test("Playwright in browser results", any(r["id"] == "playwright" for r in browser_results))
+    _check("Search 'browser' finds results", len(browser_results) >= 2)
+    _check("Playwright in browser results", any(r["id"] == "playwright" for r in browser_results))
 
     db_results = reg.search("database")
-    test("Search 'database' finds results", len(db_results) >= 1)
+    _check("Search 'database' finds results", len(db_results) >= 1)
 
     template = reg.get_template("github")
-    test("Get template github", template is not None)
-    test("Template has command", "command" in template)
-    test("Template has description", "description" in template)
+    _check("Get template github", template is not None)
+    _check("Template has command", "command" in template)
+    _check("Template has description", "description" in template)
 
 
 def test_health_checker():
@@ -222,14 +222,14 @@ def test_health_checker():
     print("\n--- 5. HEALTH CHECKER ---")
 
     hc = HealthChecker()
-    test("HealthChecker initialized", hc is not None)
+    _check("HealthChecker initialized", hc is not None)
 
     result = hc.check_server("nonexistent", {"type": "npx", "command": ["echo"]})
-    test("Check returns result", result is not None)
-    test("Check has status", hasattr(result, "to_dict"))
+    _check("Check returns result", result is not None)
+    _check("Check has status", hasattr(result, "to_dict"))
 
     history = hc.get_history("nonexistent")
-    test("History returns list", isinstance(history, list))
+    _check("History returns list", isinstance(history, list))
 
 
 def test_integration():
@@ -251,7 +251,7 @@ def test_integration():
     cm_src.load()
     cm_src.add_server("github", {"type": "docker", "command": ["docker", "run", "ghcr"]})
     cm_src.add_server("playwright", {"type": "npx", "command": ["npx", "playwright"]})
-    test("Integration: add 2 servers", len(cm_src.list_servers()) == 2)
+    _check("Integration: add 2 servers", len(cm_src.list_servers()) == 2)
 
     # Cursor manager
     cm_dst = ConfigManager(harness_id="cursor", config_path=temp_cursor.name)
@@ -261,12 +261,12 @@ def test_integration():
     servers = cm_src.list_servers()
     for name, cfg in servers.items():
         cm_dst.add_server(name, cfg)
-    test("Integration: sync to cursor", len(cm_dst.list_servers()) == 2)
+    _check("Integration: sync to cursor", len(cm_dst.list_servers()) == 2)
 
     # Verify format conversion
     cursor_servers = cm_dst.list_servers()
     github_cfg = cursor_servers.get("github", {})
-    test("Integration: cursor format has command", "command" in github_cfg)
+    _check("Integration: cursor format has command", "command" in github_cfg)
 
     # Cleanup
     os.unlink(temp_opencode.name)
